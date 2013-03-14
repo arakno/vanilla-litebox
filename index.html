@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+    <title>Lightbox</title>
+
+    <style>
+
+
+    #litebox {
+        position: fixed;
+        top: 25%;
+        left: 25%;
+        background: #fafafa;
+        border-radius: 6px;
+        box-shadow: 3px 3px 5px 6px #333;
+        border: 1px solid:#ccc;
+        z-index: 999;
+        width: 500px;
+        height: 300px;
+        display: none;
+    }
+    #litebox_shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #000;
+    width: 100%;
+    height: 100%;
+    }
+
+.on {
+    transition: all 1s ease-in-out;
+    filter: alpha(opacity=60);
+    -moz-opacity: 0.60;
+    opacity: 0.60;
+    display: block;
+}
+.off {
+    display: none;
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    opacity: 0;
+    z-index: 900;
+    transition: all 2s ease-in-out;
+
+}
+
+    #litebox header {background:#ddd; cursor: move; padding: 20px;}
+    #litebox footer, #litebox div {padding: 20px;}
+
+    #close {color: red; float: right;font-weight: bold;}
+    </style>
+</head>
+<body>
+    <ul>
+        <li class="liteme"><a href="">link 1</a></li>
+        <li class="liteme"><a href="">Click here to display lightbox</a></li>
+        <li class="liteme"><a href="">Click 3 to display lightbox</a></li>
+    </ul>
+    <div id="litebox" draggable="true" role="dialog" aria-label="New Message">
+        <header>
+            Este eh o header
+            <a href="#" id="close">X close</a>
+        </header>
+        <div>
+            Este eh o body
+            <p>mais a msg</p>
+        </div>
+        <footer>
+            este eh o footer
+        </footer>
+    </div>
+    <div id="litebox_shadow" class="off"></div>
+
+    <script>
+/*
+Height (should default to 500px)
+Width (should default to 500px)
+Position (should default to the centre of the page)
+Message inside the lightbox (no default so should provide error handling)
+Lightbox effect should be configurable between light and dark (default
+value is dark)
+Ability to display a Confirm or Cancel button inside the lightbox (default is
+to not display any buttons)
+Styling of the lightbox should be configurable
+*/
+
+
+//TODO DOCUMENT: couldnt get transition to work. cant get A href="" tags to behave with JS return false.
+
+document.addEventListener('DOMContentLoaded', function() {
+
+
+    var config = {
+        close : true,
+        h : 500,
+        w : 500,
+        pw : window.width/2,
+        ph : window.height/2,
+        theme : "dark",
+        bt : "",
+        msg : function(mymsg){
+            if(undefined || null){
+                this.innerHTML = "Throw error";
+            }
+        },
+        liteStyle : {radius:"2px", border: "1px"}
+    }
+
+    var litemeUp = {
+
+        litebox : document.getElementById('litebox'),
+        litebox_shadow : document.getElementById('litebox_shadow'),
+        closebt : document.getElementById('close'),
+
+        init : function(){
+        //var $litebox = document.getElementById('litebox');
+        litebox_shadow.style.display = "block";
+        litebox_shadow.setAttribute("class", "on");
+        litebox.style.display = "block";
+        this.closebt.addEventListener("click", this.close, false);
+
+        this.config = config || {};
+        this.render = function () {
+            this.prototype.render = config;
+        };
+      //  this.render();
+  },
+
+  close : function(){
+    litebox.style.display = "none";
+    litebox_shadow.removeAttribute("class");
+    litebox_shadow.style.display = "none";
+    }
+}
+
+
+function display(e){
+    e = e || window.event;
+    e.preventDefault();
+    e.stopPropagation();
+
+    litemeUp.init();
+}
+
+// using Vanilla JS here. Coouldn't get it to work with legacy getElementsByClassName() and <a href=""></a>
+var collectlinks = document.querySelectorAll('li a');
+
+for (var i = 0; i < collectlinks.length; i++) {
+    collectlinks[i].addEventListener('click', display, false);
+};
+
+
+
+}, false);
+
+</script>
+</body>
+</html>
